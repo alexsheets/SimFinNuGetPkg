@@ -74,7 +74,7 @@ namespace SimFinAPI
             }
         }
 
-        public async Task<JsonResult> FinancialStatements(string ticker, string statement_type, int fyear, string period)
+        public async Task<JsonResult> FinancialStatementsCompact(string ticker, string statement_type, int fyear, string period)
         {
             try
             {
@@ -102,6 +102,41 @@ namespace SimFinAPI
                     return new JsonResult(response);
                 }
             } catch (Exception ex) {
+                Log("Error returning company financial statements.");
+                return new JsonResult(ex);
+            }
+        }
+
+        public async Task<JsonResult> FinancialStatementsVerbose(string ticker, string statement_type, int fyear, string period)
+        {
+            try
+            {
+                // create link using passed in params
+                string url = _url + "statements/verbose/";
+                string linkParams = $"?ticker={ticker}&statements={statement_type}&fyear={fyear}&period={period}";
+                url = url + linkParams;
+                _restClientOptions = new RestClientOptions(url);
+
+                // instantiate client
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
+
+                // get link using params and return as jsonified content
+                var response = await _restClient.GetAsync(_request);
+
+                // return response
+                if (response != null)
+                {
+                    return new JsonResult(response);
+                }
+                else
+                {
+                    Log("Error returning company financial statements.");
+                    return new JsonResult(response);
+                }
+            }
+            catch (Exception ex)
+            {
                 Log("Error returning company financial statements.");
                 return new JsonResult(ex);
             }
