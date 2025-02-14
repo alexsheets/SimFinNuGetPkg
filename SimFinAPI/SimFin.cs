@@ -73,13 +73,13 @@ namespace SimFinAPI
             }
         }
 
-        public async Task<JsonResult> RequestCompanyFinancialStatements(string api_key, string ticker, string statement_type, int year, string quarter)
+        public async Task<JsonResult> RequestCompanyFinancialStatements(string api_key, string ticker, string statement_type, int fyear, string period)
         {
             try
             {
                 // create link using passed in params
                 _url = _url + "statements/compact/";
-                string linkParams = $"?ticker={ticker}&statements={statement_type}&fyear={year}&period={quarter}";
+                string linkParams = $"?ticker={ticker}&statements={statement_type}&fyear={fyear}&period={period}";
                 _url = _url + linkParams;
                 _restClientOptions = new RestClientOptions(_url);
 
