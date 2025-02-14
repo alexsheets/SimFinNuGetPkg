@@ -18,6 +18,7 @@ namespace SimFinAPI
         private RestClient _restClient;
         private RestClientOptions _restClientOptions;
         private RestRequest _request;
+        private string _url = "https://backend.simfin.com/api/v3/companies/";
 
         public SimFin(IConfiguration configuration)
         {
@@ -38,17 +39,11 @@ namespace SimFinAPI
 
         public async Task<JsonResult> RequestGeneralInfo(string api_key, string ticker)
         {
-
-        }
-
-        public async Task<JsonResult> RequestCompanyStatements(string api_key, string ticker, string statement_type, int year, string quarter)
-        {
             try
             {
                 // create link using passed in params
-                string linkParams = $"?ticker={ticker}&statements={statement_type}&fyear={year}&period={quarter}";
-                string link = "https://backend.simfin.com/api/v3/companies/statements/compact/" + linkParams;
-                _restClientOptions = new RestClientOptions(link);
+                _url = _url + $"?ticker={ticker}";
+                _restClientOptions = new RestClientOptions(_url);
 
                 // instantiate client
                 _restClient = new RestClient(_restClientOptions);
@@ -57,7 +52,45 @@ namespace SimFinAPI
                 // add api key/auth header
                 _request.AddHeader("Authorization", api_key);
 
-                // get link using params and return as jsonified content (the response will be json, this deserializes it)
+                // get link using params and return as jsonified content
+                var response = await _restClient.GetAsync(_request);
+
+                // return response
+                if (response != null)
+                {
+                    return new JsonResult(response);
+                }
+                else
+                {
+                    Log("Error returning general company info.");
+                    return new JsonResult(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error returning general company info.");
+                return new JsonResult(ex);
+            }
+        }
+
+        public async Task<JsonResult> RequestCompanyFinancialStatements(string api_key, string ticker, string statement_type, int year, string quarter)
+        {
+            try
+            {
+                // create link using passed in params
+                _url = _url + "statements/compact/";
+                string linkParams = $"?ticker={ticker}&statements={statement_type}&fyear={year}&period={quarter}";
+                _url = _url + linkParams;
+                _restClientOptions = new RestClientOptions(_url);
+
+                // instantiate client
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
+
+                // add api key/auth header
+                _request.AddHeader("Authorization", api_key);
+
+                // get link using params and return as jsonified content
                 var response = await _restClient.GetAsync(_request);
 
                 // return response
