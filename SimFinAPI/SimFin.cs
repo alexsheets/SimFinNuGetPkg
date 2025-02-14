@@ -1,9 +1,6 @@
 ﻿using RestSharp;
 using Microsoft.AspNetCore.Mvc;
 
-using static System.Net.WebRequestMethods;
-using Microsoft.Extensions.Configuration;
-
 // https://www.milanjovanovic.tech/blog/the-right-way-to-use-httpclient-in-dotnet
 // https://simfin.readme.io/reference/getting-started-1
 
@@ -36,8 +33,12 @@ namespace SimFinAPI
         {
             Console.WriteLine(text);
         }
+        
+        /*
+         * Functions for pulling general finance information from SimFin API.
+         */
 
-        public async Task<JsonResult> RequestGeneralInfo(string ticker)
+        public async Task<JsonResult> GeneralInfoSingleTicker(string ticker)
         {
             try
             {
@@ -70,7 +71,7 @@ namespace SimFinAPI
             }
         }
 
-        public async Task<JsonResult> RequestCompanyFinancialStatements(string ticker, string statement_type, int fyear, string period)
+        public async Task<JsonResult> FinancialStatementsSingleTicker(string ticker, string statement_type, int fyear, string period)
         {
             try
             {
@@ -103,6 +104,74 @@ namespace SimFinAPI
             }
         }
 
+        public async Task<JsonResult> CommonSharesOutstandingSingleTicker(string ticker, string start, string end)
+        {
+            try
+            {
+                // create link using passed in params
+                string url = _url + $"?ticker={ticker}&start={start}&end={end}";
+                _restClientOptions = new RestClientOptions(url);
 
+                // instantiate client
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
+
+                // get link using params and return as jsonified content
+                var response = await _restClient.GetAsync(_request);
+
+                // return response
+                if (response != null)
+                {
+                    return new JsonResult(response);
+                }
+                else
+                {
+                    Log("Error returning general company info.");
+                    return new JsonResult(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error returning general company info.");
+                return new JsonResult(ex);
+            }
+        }
+
+        public async Task<JsonResult> WeightedSharesOutstandingSingleTicker(string ticker, string period, string fyear, string start, string end)
+        {
+            try
+            {
+                // create link using passed in params
+                string url = _url + $"?ticker={ticker}&period={period}&fyear={fyear}&start={start}&end={end}";
+                _restClientOptions = new RestClientOptions(url);
+
+                // instantiate client
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
+
+                // get link using params and return as jsonified content
+                var response = await _restClient.GetAsync(_request);
+
+                // return response
+                if (response != null)
+                {
+                    return new JsonResult(response);
+                }
+                else
+                {
+                    Log("Error returning general company info.");
+                    return new JsonResult(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error returning general company info.");
+                return new JsonResult(ex);
+            }
+        }
+
+        /*
+         * Functions for pulling price data and performing machine learning using the data.
+         */
     }
 }
