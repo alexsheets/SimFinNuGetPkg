@@ -1,35 +1,35 @@
 ﻿using RestSharp;
-
-// using System.Web.Helpers;
-// using System.Web.Mvc;
 using Microsoft.AspNetCore.Mvc;
 
 using static System.Net.WebRequestMethods;
 using Microsoft.Extensions.Configuration;
 
 // https://www.milanjovanovic.tech/blog/the-right-way-to-use-httpclient-in-dotnet
+// https://simfin.readme.io/reference/getting-started-1
 
 namespace SimFinAPI
 {
     public class SimFin
     {
 
-        private readonly IConfiguration _configuration;
         private RestClient _restClient;
         private RestClientOptions _restClientOptions;
         private RestRequest _request;
         private string _url = "https://backend.simfin.com/api/v3/companies/";
 
-        public SimFin(IConfiguration configuration)
+        public SimFin(string api_key)
         {
-            _configuration = configuration;
             // instantiate rest request members
             _request = new RestRequest();
             _restClient = new RestClient();
             _restClientOptions = new RestClientOptions();
+
             // add necessary headers for any request
             _request.AddHeader("Accept", "application/json, text/plain, */*");
             _request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36");
+
+            // add api key/auth header
+            _request.AddHeader("Authorization", api_key);
         }
 
         public void Log(string text)
@@ -42,15 +42,12 @@ namespace SimFinAPI
             try
             {
                 // create link using passed in params
-                _url = _url + $"?ticker={ticker}";
-                _restClientOptions = new RestClientOptions(_url);
+                string url = _url + $"?ticker={ticker}";
+                _restClientOptions = new RestClientOptions(url);
 
                 // instantiate client
                 _restClient = new RestClient(_restClientOptions);
                 _request = new RestRequest("");
-
-                // add api key/auth header
-                _request.AddHeader("Authorization", api_key);
 
                 // get link using params and return as jsonified content
                 var response = await _restClient.GetAsync(_request);
@@ -78,17 +75,14 @@ namespace SimFinAPI
             try
             {
                 // create link using passed in params
-                _url = _url + "statements/compact/";
+                string url = _url + "statements/compact/";
                 string linkParams = $"?ticker={ticker}&statements={statement_type}&fyear={fyear}&period={period}";
-                _url = _url + linkParams;
-                _restClientOptions = new RestClientOptions(_url);
+                url = url + linkParams;
+                _restClientOptions = new RestClientOptions(url);
 
                 // instantiate client
                 _restClient = new RestClient(_restClientOptions);
                 _request = new RestRequest("");
-
-                // add api key/auth header
-                _request.AddHeader("Authorization", api_key);
 
                 // get link using params and return as jsonified content
                 var response = await _restClient.GetAsync(_request);
@@ -108,5 +102,7 @@ namespace SimFinAPI
                 return new JsonResult(ex);
             }
         }
+
+
     }
 }
