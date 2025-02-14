@@ -38,7 +38,10 @@ namespace SimFinAPI
          * Functions for pulling general finance information from SimFin API.
          */
 
-        public async Task<JsonResult> GeneralInfoSingleTicker(string ticker)
+        // TODO:
+        // implement comma separation for necessary parameters
+
+        public async Task<JsonResult> GeneralInfo(string ticker)
         {
             try
             {
@@ -71,7 +74,7 @@ namespace SimFinAPI
             }
         }
 
-        public async Task<JsonResult> FinancialStatementsSingleTicker(string ticker, string statement_type, int fyear, string period)
+        public async Task<JsonResult> FinancialStatements(string ticker, string statement_type, int fyear, string period)
         {
             try
             {
@@ -104,7 +107,7 @@ namespace SimFinAPI
             }
         }
 
-        public async Task<JsonResult> CommonSharesOutstandingSingleTicker(string ticker, string start, string end)
+        public async Task<JsonResult> CommonSharesOutstanding(string ticker, string start, string end)
         {
             try
             {
@@ -137,7 +140,7 @@ namespace SimFinAPI
             }
         }
 
-        public async Task<JsonResult> WeightedSharesOutstandingSingleTicker(string ticker, string period, string fyear, string start, string end)
+        public async Task<JsonResult> WeightedSharesOutstanding(string ticker, string period, string fyear, string start, string end)
         {
             try
             {
