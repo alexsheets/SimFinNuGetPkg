@@ -5,6 +5,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 using static System.Net.WebRequestMethods;
+using Microsoft.Extensions.Configuration;
 
 // https://www.milanjovanovic.tech/blog/the-right-way-to-use-httpclient-in-dotnet
 
@@ -13,7 +14,22 @@ namespace SimFinAPI
     public class SimFin
     {
 
+        private readonly IConfiguration _configuration;
+        private RestClient _restClient;
+        private RestClientOptions _restClientOptions;
+        private RestRequest _request;
 
+        public SimFin(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            // instantiate rest request members
+            _request = new RestRequest();
+            _restClient = new RestClient();
+            _restClientOptions = new RestClientOptions();
+            // add necessary headers for any request
+            _request.AddHeader("Accept", "application/json, text/plain, */*");
+            _request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36");
+        }
 
         public void Log(string text)
         {
@@ -32,19 +48,17 @@ namespace SimFinAPI
                 // create link using passed in params
                 string linkParams = $"?ticker={ticker}&statements={statement_type}&fyear={year}&period={quarter}";
                 string link = "https://backend.simfin.com/api/v3/companies/statements/compact/" + linkParams;
-                var options = new RestClientOptions(link);
+                _restClientOptions = new RestClientOptions(link);
 
                 // instantiate client
-                var client = new RestClient(options);
-                var request = new RestRequest("");
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
 
-                // set up headers
-                request.AddHeader("Accept", "application/json, text/plain, */*");
-                request.AddHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36");
-                request.AddHeader("Authorization", api_key);
+                // add api key/auth header
+                _request.AddHeader("Authorization", api_key);
 
                 // get link using params and return as jsonified content (the response will be json, this deserializes it)
-                var response = await client.GetAsync(request);
+                var response = await _restClient.GetAsync(_request);
 
                 // return response
                 if (response != null)
