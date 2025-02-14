@@ -37,7 +37,7 @@ namespace SimFinAPI
             Console.WriteLine(text);
         }
 
-        public async Task<JsonResult> RequestGeneralInfo(string api_key, string ticker)
+        public async Task<JsonResult> RequestGeneralInfo(string ticker)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace SimFinAPI
             }
         }
 
-        public async Task<JsonResult> RequestCompanyFinancialStatements(string api_key, string ticker, string statement_type, int fyear, string period)
+        public async Task<JsonResult> RequestCompanyFinancialStatements(string ticker, string statement_type, int fyear, string period)
         {
             try
             {

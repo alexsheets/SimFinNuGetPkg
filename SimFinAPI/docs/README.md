@@ -2,7 +2,7 @@
 
 #--------------------------------------------------------
 
-NOTICE: must supply SimFin API key for any request being performed.
+NOTICE: must supply SimFin API key to instantiate the class/package, then use that instance to complete any requests necessary with provided API key.
 All requests return use the verbose version of the requests which return Json which can then be deserialized and queried.
 
 Current built-out requests and parameters required:
