@@ -98,11 +98,11 @@ namespace SimFinAPI
                 }
                 else
                 {
-                    Log("Error returning company statements.");
+                    Log("Error returning company financial statements.");
                     return new JsonResult(response);
                 }
             } catch (Exception ex) {
-                Log("Error returning company statements.");
+                Log("Error returning company financial statements.");
                 return new JsonResult(ex);
             }
         }
@@ -129,13 +129,13 @@ namespace SimFinAPI
                 }
                 else
                 {
-                    Log("Error returning general company info.");
+                    Log("Error returning common shares outstanding.");
                     return new JsonResult(response);
                 }
             }
             catch (Exception ex)
             {
-                Log("Error returning general company info.");
+                Log("Error returning common shares outstanding.");
                 return new JsonResult(ex);
             }
         }
@@ -162,13 +162,13 @@ namespace SimFinAPI
                 }
                 else
                 {
-                    Log("Error returning general company info.");
+                    Log("Error returning weighted shares outstanding.");
                     return new JsonResult(response);
                 }
             }
             catch (Exception ex)
             {
-                Log("Error returning general company info.");
+                Log("Error returning weighted shares outstanding.");
                 return new JsonResult(ex);
             }
         }
