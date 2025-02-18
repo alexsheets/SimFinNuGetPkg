@@ -1,5 +1,6 @@
 ﻿using RestSharp;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 // https://www.milanjovanovic.tech/blog/the-right-way-to-use-httpclient-in-dotnet
 // https://simfin.readme.io/reference/getting-started-1
@@ -33,13 +34,39 @@ namespace SimFinAPI
         {
             Console.WriteLine(text);
         }
-        
+
         /*
          * Functions for pulling general finance information from SimFin API.
          */
 
         // TODO:
         // implement comma separation for necessary parameters
+
+        public async Task<JsonResult> CreateJsonOfCompanies()
+        {
+            try
+            {
+                string url = _url;
+                _restClientOptions = new RestClientOptions(url);
+
+                // instantiate client
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
+
+                // get link using params and return as jsonified content
+                var response = await _restClient.GetAsync(_request);
+
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error retrieving companies.");
+                return new JsonResult(ex);
+            }
+        }
 
         public async Task<JsonResult> GeneralInfo(string ticker)
         {
@@ -57,7 +84,7 @@ namespace SimFinAPI
                 var response = await _restClient.GetAsync(_request);
 
                 // return response
-                if (response != null)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return new JsonResult(response);
                 }
@@ -92,7 +119,7 @@ namespace SimFinAPI
                 var response = await _restClient.GetAsync(_request);
 
                 // return response
-                if (response != null)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return new JsonResult(response);
                 }
@@ -125,7 +152,7 @@ namespace SimFinAPI
                 var response = await _restClient.GetAsync(_request);
 
                 // return response
-                if (response != null)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return new JsonResult(response);
                 }
@@ -158,7 +185,7 @@ namespace SimFinAPI
                 var response = await _restClient.GetAsync(_request);
 
                 // return response
-                if (response != null)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return new JsonResult(response);
                 }
@@ -191,7 +218,7 @@ namespace SimFinAPI
                 var response = await _restClient.GetAsync(_request);
 
                 // return response
-                if (response != null)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     return new JsonResult(response);
                 }
