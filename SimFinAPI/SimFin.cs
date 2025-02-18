@@ -1,5 +1,6 @@
 ﻿using RestSharp;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System;
 
 // https://www.milanjovanovic.tech/blog/the-right-way-to-use-httpclient-in-dotnet
@@ -42,7 +43,7 @@ namespace SimFinAPI
         // TODO:
         // implement comma separation for necessary parameters
 
-        public async Task<JsonResult> CreateJsonOfCompanies()
+        public async Task<string> CreateJsonOfCompanies(string path)
         {
             try
             {
@@ -58,13 +59,22 @@ namespace SimFinAPI
 
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-
+                    // write to json using provided file path
+                    using (StreamWriter file = File.CreateText(path))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        // serialize object directly into file stream
+                        serializer.Serialize(file, response.Content);
+                    }
+                    return "Successfully wrote companies JSON file to provided path";
+                } else
+                {
+                    return "Error writing companies JSON file to provided path";
                 }
             }
             catch (Exception ex)
             {
-                Log("Error retrieving companies.");
-                return new JsonResult(ex);
+                return "Error writing companies JSON file to provided path";
             }
         }
 
