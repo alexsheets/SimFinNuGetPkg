@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
+using static System.Net.WebRequestMethods;
 
 // https://www.milanjovanovic.tech/blog/the-right-way-to-use-httpclient-in-dotnet
 // https://simfin.readme.io/reference/getting-started-1
@@ -43,6 +44,11 @@ namespace SimFinAPI
         // TODO:
         // implement comma separation for necessary parameters
 
+
+        /*
+         * Functions written to retain general information of a company, their filings, or get a json file of all companies stored for view.
+         */
+        
         public async Task<string> CreateJsonOfCompanies(string path)
         {
             try
@@ -110,6 +116,43 @@ namespace SimFinAPI
                 return new JsonResult(ex);
             }
         }
+
+        public async Task<JsonResult> RetrieveFilingsList(string ticker)
+        {
+            try
+            {
+                // create link using passed in params
+                string url = $"https://backend.simfin.com/api/v3/filings/by-company?ticker={ticker}";
+                _restClientOptions = new RestClientOptions(url);
+
+                // instantiate client
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
+
+                // get link using params and return as jsonified content
+                var response = await _restClient.GetAsync(_request);
+
+                // return response
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return new JsonResult(response);
+                }
+                else
+                {
+                    Log("Error returning general company info.");
+                    return new JsonResult(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error returning general company info.");
+                return new JsonResult(ex);
+            }
+        }
+
+        /*
+         * Functions written to view the financial statements with given parameters.
+         */
 
         public async Task<JsonResult> FinancialStatementsCompact(string ticker, string statement_type, int fyear, string period)
         {
@@ -179,6 +222,9 @@ namespace SimFinAPI
             }
         }
 
+        /*
+         * Functions written to view the outstanding shares of a given company.
+         */
         public async Task<JsonResult> CommonSharesOutstanding(string ticker, string start, string end)
         {
             try
