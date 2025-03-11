@@ -248,5 +248,73 @@ namespace SimFinAPI
         /*
          * Functions for pulling price data and performing machine learning using the data.
          */
+
+        public async Task<JsonResult> PullPriceDataCompact(string ticker, string period, string fyear, string start, string end)
+        {
+            try
+            {
+                // create link using passed in params
+                string url = _url + "prices/compact";
+                url = _url + $"?ticker={ticker}&ratios=false&asreported=true&start={start}&end={end}";
+                _restClientOptions = new RestClientOptions(url);
+
+                // instantiate client
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
+
+                // get link using params and return as jsonified content
+                var response = await _restClient.GetAsync(_request);
+
+                // return response
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return new JsonResult(response);
+                }
+                else
+                {
+                    Log("Error returning compact price data.");
+                    return new JsonResult(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error returning compact price data");
+                return new JsonResult(ex);
+            }
+        }
+
+        public async Task<JsonResult> PullPriceDataVerbose(string ticker, string period, string fyear, string start, string end)
+        {
+            try
+            {
+                // create link using passed in params
+                string url = _url + "prices/verbose";
+                url = _url + $"?ticker={ticker}&ratios=false&asreported=true&start={start}&end={end}";
+                _restClientOptions = new RestClientOptions(url);
+
+                // instantiate client
+                _restClient = new RestClient(_restClientOptions);
+                _request = new RestRequest("");
+
+                // get link using params and return as jsonified content
+                var response = await _restClient.GetAsync(_request);
+
+                // return response
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                {
+                    return new JsonResult(response);
+                }
+                else
+                {
+                    Log("Error returning verbose price data.");
+                    return new JsonResult(response);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log("Error returning compact price data.");
+                return new JsonResult(ex);
+            }
+        }
     }
 }
