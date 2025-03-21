@@ -15,7 +15,7 @@ namespace SimFinAPI
         private RestClient _restClient;
         private RestClientOptions _restClientOptions;
         private RestRequest _request;
-        private string _url = "https://backend.simfin.com/api/v3/companies/";
+        private string _url = "https://prod.simfin.com/api/v3/companies/";
 
         public SimFin(string api_key)
         {
@@ -36,10 +36,6 @@ namespace SimFinAPI
         {
             Console.WriteLine(text);
         }
-
-        /*
-         * Functions for pulling general finance information from SimFin API.
-         */
 
         // TODO:
         // implement comma separation for necessary parameters
@@ -122,7 +118,7 @@ namespace SimFinAPI
             try
             {
                 // create link using passed in params
-                string url = $"https://backend.simfin.com/api/v3/filings/by-company?ticker={ticker}";
+                string url = $"https://prod.simfin.com/api/v3/filings/by-company?ticker={ticker}";
                 _restClientOptions = new RestClientOptions(url);
 
                 // instantiate client
